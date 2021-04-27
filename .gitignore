@@ -1,2 +1,6 @@
 .DS_Store
 venv/
+__pycache__/
+main.egg-info/
+netscan.egg-info/
+devices.json
