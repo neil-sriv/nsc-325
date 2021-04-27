@@ -3,29 +3,32 @@ import json
 from nmap import scan
 from data_models import Device
 import socket
+import nmap3
 
 
 @click.command()
-@click.option('-d','--devices', help='Print the list of devices on the network', is_flag=True)
-@click.option('-s','--scan', help='Scan for the list of devices on the network', is_flag=True)
+@click.option('-d', '--devices', help='Print the list of devices on the network', is_flag=True)
+@click.option('-s', '--scan', help='Scan for the list of devices on the network', is_flag=True)
 @click.option('-v', '--verbose', help='Print verbose', is_flag=True)
 # @click.option('--scan', prompt='Your name',
 #               help='The person to greet.')
 def cli(devices, scan, verbose):
     """Scan your wifi and list connected devices"""
     if devices or scan:
-        current_devices(scan=scan, verbose=verbose)
+        try:
+            current_devices(scan=scan, verbose=verbose)
+        except nmap3.exceptions.NmapExecutionError:
+            print('If on Linux or OSX please run with "sudo", if on Windows please run as admin!')
 
 
 def nmap_scan(ip):
     return scan(ip)
 
+
 def get_ip():
     ips = socket.gethostbyname_ex(socket.gethostname())[-1]
     ip = ips[-1]
     return ip
-
-
 
 
 def current_devices(scan=False, verbose=False):
