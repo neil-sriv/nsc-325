@@ -26,4 +26,5 @@ def find_gateway():
                     return item
                else:
                     pass
-# find_gateway()
+if __name__ == '__main__':
+     find_gateway()
