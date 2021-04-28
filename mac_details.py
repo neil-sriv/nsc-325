@@ -1,7 +1,12 @@
 import requests 
 import argparse
 import time
+import pandas as pd
+import numpy as np
 from mac import mac
+from tabulate import tabulate
+
+url = 'http://standards-oui.ieee.org/oui/oui.csv'
   
 print("[*] Welcome") 
   
@@ -23,8 +28,50 @@ print("[*] Welcome")
 #         return options.mac_address 
 #     else: 
 #         parser.error("[!] Invalid Syntax. "
-#                      "Use --help for more details.") 
+#                      "Use --help for more details.")
 
+def get_vendor_details(url='http://standards-oui.ieee.org/oui/oui.csv'):
+    df=pd.read_csv(url,dtype=str)
+    return df
+    
+def main_mac(Demo=True, dummy= {}
+            ): 
+    if Demo:
+        macs= dummy
+    else:
+        macs = mac()
+    dic = {}
+    ip_list = []
+    m_list = []
+    vendor_list = []
+    loc_list = []
+    df = get_vendor_details()
+    for ip,m in zip(macs.keys(), macs.values()):
+        mac_ids =m[:8]
+        nes = mac_ids.replace(':','')
+        search = f'{nes.upper()}'
+    #     print(search)
+        ip_list.append(ip)
+        m_list.append(m)
+        ans = df[df.Assignment == search]
+        vendor = str(ans['Organization Name'])[6:-40].lstrip()
+        l = str(ans['Organization Address'])[6:].strip()
+        loc =l.replace(' \nName: Organization Address, dtype: object','')
+#         print(vendor)
+        if '([],' in vendor:
+            vendor_list.append('Not Discovered')
+            loc_list.append('Not Discovered')
+
+    #     n.append(ans['Organization Name'])
+        else:
+            vendor_list.append(vendor)
+            loc_list.append(loc)
+    dic['ip'] = ip_list
+    dic['mac adresses'] = m_list
+    dic['vendor'] = vendor_list
+    dic['location'] = loc_list
+    df2 = pd.DataFrame(dic)
+    print(df2)
 
 def get_mac_details(mac_address): 
       
@@ -42,6 +89,7 @@ def main(dummy_mac=[]):
         macs = mac()
         if dummy_mac != []:
           macs = dummy_mac
+
         # print("IP                  MAC                       Vendor Name")
         for k in macs.keys():
             try:
@@ -53,4 +101,6 @@ def main(dummy_mac=[]):
                 print('Something went wrong')
             time.sleep(2)
 
-main()
+
+if __name__ == '__main__':
+    main_mac(Demo = False)
