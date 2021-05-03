@@ -1,12 +1,13 @@
 from scapy.all import ARP, Ether, srp
+
 from find_ip import find_gateway
 
 
-def mac():
+def mac(target_ip='', Find_IP=True):
 	mac_dict = {}
 
-	# target_ip = "192.168.0.1/24"
-	target_ip = str(find_gateway()) + "/24"
+	if Find_IP:
+		target_ip = str(find_gateway()) + "/24"
 	# IP Address for the destination
 	# create ARP packet
 	arp = ARP(pdst=target_ip)
@@ -36,3 +37,13 @@ def mac():
 	        print("Success")
 	return mac_dict
 
+if __name__ == '__main__':
+	target = str(input("have a target IP?: "))
+	if (target == 'yes') or (target == 'yes'):
+		target_IP = str(input("Enter target_IP \n Ex: target_ip = '192.168.0.1/24' \n"))
+		Find_IP= False
+	else:
+		target_IP = ''
+		Find_IP= True
+	results= mac(target_IP, Find_IP)
+	print(results)
