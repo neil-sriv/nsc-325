@@ -12,6 +12,8 @@ class Device:
             f'IP: {self.__ip}\nHostname: {self.__hostname}\nMAC: {self.__mac}\n')
         print(f'Vendor: {self.__vendor}')
         print('Possible OS:')
+        if self.__os is None:
+            return
         for guess in self.__os:
             name,acc,type = guess['name'], guess['accuracy'], guess['osclass']['type']
             print(f'\tName: {name}\n\tAccuracy: {acc}\n\tType: {type}\n')
